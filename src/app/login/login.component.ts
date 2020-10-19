@@ -21,7 +21,11 @@ export class LoginComponent implements OnInit {
     ) {
         // redirect to home if already logged in
         if (this.authenticationService.currentUserValue) {
-            this.router.navigate(['/']);
+            if (this.authenticationService.currentUserValue.role == 'Auditor') {
+                this.router.navigate(['/audit']);
+            } else {
+                this.router.navigate(['/']);
+            }
         }
     }
 
@@ -54,7 +58,11 @@ export class LoginComponent implements OnInit {
             .pipe(first())
             .subscribe(
                 data => {
-                    this.router.navigate([this.returnUrl]);
+                    if (data.role == 'Auditor') {
+                        this.router.navigate(['/audit']);
+                    } else {
+                        this.router.navigate([this.returnUrl]);
+                    }
                 },
                 error => {
                     this.alertService.error(error);

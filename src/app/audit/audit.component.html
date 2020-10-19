@@ -1,13 +1,54 @@
 <h1>Hi {{currentUser.firstName}}!</h1>
 <p>You're logged in with Angular 8!!</p>
 <h3>All login audit :</h3>
-<ul>
-    <li *ngFor="let audit of audits">
-        <br/><span class="badge badge-primary">{{audit.user}}</span>
-        <br/><span class="badge badge-secondary">{{audit._id}}</span>
-        <br/>Login - {{audit.loginTime}}
-        <br/>Logout - {{audit.logoutTime}}
-        <br/>IP - {{audit.ip}}
-    </li>
 
-</ul>
+<mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input matInput placeholder="Filter" (keyup)="filterAudits($event.target.value)">
+</mat-form-field>
+<mat-form-field>
+    <mat-label>Hours Format</mat-label>
+    <mat-select [(value)]="dateFormat">
+        <mat-option *ngFor="let format of hoursFormat" [value]="format.value">
+        {{ format.hourFormat }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<div class="mat-elevation-z8">
+    <table mat-table [dataSource]="audits" matSort>
+
+    <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+    <td mat-cell *matCellDef="let row"> {{ row.id }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="ip">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> IP </th>
+    <td mat-cell *matCellDef="let row"> {{ row.ip }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="loginTime">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Login Time </th>
+    <td mat-cell *matCellDef="let row"> {{ row.loginTime | date: dateFormat }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="logoutTime">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> Logout Time </th>
+    <td mat-cell *matCellDef="let row"> {{ row.logoutTime | date: dateFormat }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="user">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> User </th>
+        <td mat-cell *matCellDef="let row"> {{ row.user }} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+    </tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+</div>
+
+
